@@ -1,0 +1,30 @@
+FROM 8thom/simplytest:drupal
+
+ENV DRUPAL_DIR="/drupal"
+
+RUN composer create-project drupal-composer/drupal-project:8.x-dev $DRUPAL_DIR --stability dev --no-interaction \
+    && mkdir -p $DRUPAL_DIR/config/sync \
+    && chmod 777 $DRUPAL_DIR/config/sync
+
+WORKDIR /drupal
+
+RUN { \
+		echo "\$databases['default']['default'] = array ("; \
+		echo "  'database' => getenv('DRUPAL_DB_NAME') ?: 'drupal',"; \
+		echo "  'username' => getenv('DRUPAL_DB_USER') ?: 'drupal',"; \
+		echo "  'password' => getenv('DRUPAL_DB_PASS') ?: 'drupal',"; \
+		echo "  'prefix' => '',"; \
+		echo "  'host' => getenv('DRUPAL_DB_HOST') ?: 'drupal',"; \
+		echo "  'port' => getenv('DRUPAL_DB_PORT') ?: '3306',"; \
+		echo "  'namespace' => 'Drupal\\\\\\\\Core\\\\\\\\Database\\\\\\\\Driver\\\\\\\\mysql',"; \
+		echo "  'driver' => 'mysql',"; \
+		echo ");"; \
+		echo ; \
+		echo "\$settings['hash_salt'] = getenv('DRUPAL_HASH_SALT') ?: 'changeme';"; \
+		echo "\$settings['trusted_host_patterns'] = [getenv('DRUPAL_TRUSTED_HOSTS') ?: '^.+\$'];"; \
+	} | tee -a "$DRUPAL_DIR/web/sites/default/settings.php" \
+	&& chmod 444 $DRUPAL_DIR/web/sites/default/settings.php
+
+COPY install.sh /install.sh
+
+CMD ["/install.sh", "apache2-foreground"]

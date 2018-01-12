@@ -1,0 +1,22 @@
+---
+version: '3'
+services:
+  drupal:
+    image: 8thom/simplytest:d${VERSION:-8}
+    volumes:
+      - ./.composer/cache:/composer/cache
+    environment:
+      COMPOSER_CACHE_DIR: /composer/cache
+      DRUPAL_DB_HOST: mariadb
+      PACKAGE: ${PACKAGE:-drupal/core}
+    ports:
+      - "8000:80"
+    expose:
+      - "80"
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
