@@ -1,0 +1,4 @@
+---
+version: 8
+package: drupal/admin_toolbar
+domain: simplytest.me

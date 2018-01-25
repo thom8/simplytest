@@ -1,0 +1,88 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "simplytest.fullname" . }}
+  labels:
+    app: {{ template "simplytest.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    host: {{ .Release.Name }}.{{ .Values.domain }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "simplytest.name" . }}
+        release: {{ .Release.Name }}
+        host: {{ .Release.Name }}.{{ .Values.domain }}
+    spec:
+      hostname: drupal
+      containers:
+
+        - name: web-{{ .Chart.Name }}
+          image: 8thom/simplytest:d{{ .Values.version }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+          - name: COMPOSER_CACHE_DIR
+            value: /composer/cache
+          - name: DRUPAL_DB_NAME
+            value: drupal
+          - name: DRUPAL_DB_USER
+            value: drupal
+          - name: DRUPAL_DB_PASS
+            value: drupal
+          - name: DRUPAL_DB_HOST
+            value: drupal
+          - name: DRUPAL_HASH_SALT
+            value: simplytest
+          - name: DRUPAL_TRUSTED_HOSTS
+            value: "^.+$"
+          - name: PACKAGE
+            value: {{ .Values.package }}
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 300
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 300
+          resources:
+            limits:
+              cpu: 500m
+              memory: "1Gi"
+            requests:
+              cpu: 10m
+              memory: "128Mi"
+          volumeMounts:
+          - name: cache-volume
+            mountPath: "/composer/cache"
+
+        - name: mariadb
+          image: mariadb
+          ports:
+          - containerPort: 3306
+          env:
+          - name: MYSQL_DATABASE
+            value: drupal
+          - name: MYSQL_USER
+            value: drupal
+          - name: MYSQL_PASSWORD
+            value: drupal
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: "yes"
+          resources:
+            limits:
+              cpu: 500m
+              memory: "256Mi"
+            requests:
+              cpu: 10m
+              memory: "128Mi"
+
+      volumes:
+        - name: cache-volume
+          hostPath:
+            path: /data

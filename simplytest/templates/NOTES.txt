@@ -1,0 +1,6 @@
+Drupal version: {{ .Values.version }}
+Packages: {{ .Values.package }}
+
+Run:
+
+echo http://localhost:$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "simplytest.fullname" . }})/
