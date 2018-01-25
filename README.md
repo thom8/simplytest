@@ -8,6 +8,10 @@
 
 `VERSION="8" PACKAGE="drupal/token" docker-compose up -d`
 
+## URL
+
+`http://localhost:8000/`
+
 ## Usage
 
 Drupal core version and packages are defined by environment variables.
