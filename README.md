@@ -1,5 +1,7 @@
 # Docker compose / Kubernetes simplytest.me
 
+![](https://tokei.rs/b1/github/thom8/simplytest)
+
 ## Requirements
 
 - [docker](https://docs.docker.com/engine/installation/) /w docker compose
