@@ -45,11 +45,11 @@ spec:
           livenessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 300
+            initialDelaySeconds: 60
           readinessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 300
+            initialDelaySeconds: 20
           resources:
             limits:
               cpu: 500m

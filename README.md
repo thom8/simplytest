@@ -42,6 +42,45 @@ Follow the composer installation logs
 
 `docker-compose exec drupal bash`
 
-# Kubernetes (helm) simplytest.me
+# Kubernetes (helm) - simplytest.me
 
-docs coming soon.
+## Requirements
+
+- [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/#installation)
+- [helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
+
+## Setup
+
+```bash
+git clone https://github.com/thom8/simplytest.git simplytest-k8s && cd $_
+minikube start
+helm init
+```
+
+You should now be inside the project directory with a local k8s cluster running with helm installed.
+
+## Launch first instance
+
+`helm install --set version="8" --set package="drupal/token" ./simplytest`
+
+The initial load will take a few minutes as it needs to download the images to the cluster, however subsequent installs can reuse these images.
+
+`--set` arguments override the default values in `simplytest/values.yaml`
+
+The project will be given a random name and you can access the site by running `minikube service [project-name]`
+
+## List all instances
+
+`helm ls` -- Will display a list of currently deployed projects.
+
+## Delete project
+
+`helm delete [project-name]` (as defined in `helm ls`)
+
+## Access the Kubernetes dashboard
+
+`minikube dashboard`
+
+## Note
+
+Running this project via minikube is much slower than a cloud based cluster so this is only an example of how it works, not how it performs.
