@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "simplytest.fullname" . }}
@@ -10,6 +10,9 @@ metadata:
     host: {{ .Release.Name }}.{{ .Values.domain }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "simplytest.name" . }}
   template:
     metadata:
       labels:
@@ -45,15 +48,15 @@ spec:
           livenessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
           readinessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
           resources:
-            limits:
-              cpu: 500m
-              memory: "1Gi"
+            # limits:
+            #   cpu: 500m
+            #   memory: "1Gi"
             requests:
               cpu: 10m
               memory: "128Mi"
@@ -75,9 +78,9 @@ spec:
           - name: MYSQL_RANDOM_ROOT_PASSWORD
             value: "yes"
           resources:
-            limits:
-              cpu: 500m
-              memory: "256Mi"
+            # limits:
+            #   cpu: 500m
+            #   memory: "256Mi"
             requests:
               cpu: 10m
               memory: "128Mi"
@@ -85,4 +88,4 @@ spec:
       volumes:
         - name: cache-volume
           hostPath:
-            path: /data
+            path: /data/composer

@@ -2,7 +2,7 @@
 
 if [ ! -z "$PACKAGE" ]; then
   echo "Installing $PACKAGE"
-  composer --working-dir=/drupal require $PACKAGE --ansi
+  composer -vvv --working-dir=/drupal require $PACKAGE --ansi
 fi
 
 exec "$@"
