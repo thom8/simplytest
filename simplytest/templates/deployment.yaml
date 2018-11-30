@@ -22,7 +22,6 @@ spec:
     spec:
       hostname: drupal
       containers:
-
         - name: web-{{ .Chart.Name }}
           image: 8thom/simplytest:d{{ .Values.version }}
           imagePullPolicy: Always
@@ -63,7 +62,6 @@ spec:
           volumeMounts:
           - name: cache-volume
             mountPath: "/composer/cache"
-
         - name: mariadb
           image: mariadb
           ports:
@@ -84,7 +82,6 @@ spec:
             requests:
               cpu: 10m
               memory: "128Mi"
-
       volumes:
         - name: cache-volume
           hostPath:
